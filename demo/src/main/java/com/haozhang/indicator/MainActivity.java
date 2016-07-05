@@ -16,16 +16,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final LnkPageIndicator indicator = (LnkPageIndicator) findViewById(R.id.indicator);
-        Button bt = (Button) findViewById(R.id.bt);
+        Button bt = (Button) findViewById(R.id.bt0);
         this.indicator = (LnkPageIndicator) findViewById(R.id.indicator);
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                index++;
-                if (index >=indicator.getMax()){
-                    index = 0;
-                }
-                indicator.setSelectIndex(index);
+                indicator.setSelectIndex(0);
+            }
+        });
+        findViewById(R.id.bt1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                indicator.setSelectIndex(1);
+            }
+        });
+        findViewById(R.id.bt2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                indicator.setSelectIndex(2);
             }
         });
     }

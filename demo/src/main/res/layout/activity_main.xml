@@ -10,10 +10,23 @@
     tools:context="com.haozhang.indicator.MainActivity">
 
     <Button
-        android:id="@+id/bt"
+        android:id="@+id/bt0"
         android:layout_width="100dp"
         android:layout_height="60dp"
-        android:text="SetIndex" />
+        android:text="SetIndex0" />
+
+    <Button
+        android:layout_toRightOf="@id/bt0"
+        android:id="@+id/bt1"
+        android:layout_width="100dp"
+        android:layout_height="60dp"
+        android:text="SetIndex1" />
+    <Button
+        android:layout_toRightOf="@id/bt1"
+        android:id="@+id/bt2"
+        android:layout_width="100dp"
+        android:layout_height="60dp"
+        android:text="SetIndex2" />
 
     <com.haozhang.widgets.LnkPageIndicator
         android:id="@+id/indicator"
