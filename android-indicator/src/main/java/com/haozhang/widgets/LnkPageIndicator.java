@@ -12,7 +12,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 
 /**
  * @author HaoZhang
@@ -60,7 +60,7 @@ public class LnkPageIndicator extends View {
         mIndicatorSpacing = getResources().getDimensionPixelSize(R.dimen.default_indicator_spacing);
         mAnimator = ValueAnimator.ofFloat(0f, 1f);
         mAnimator.setDuration(mAnimDuration);
-        mAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        mAnimator.setInterpolator(new AccelerateInterpolator());
         mAnimator.setRepeatCount(1);
         mAnimator.setRepeatMode(ValueAnimator.REVERSE);
 
@@ -71,7 +71,6 @@ public class LnkPageIndicator extends View {
         mDefaultPaint = new Paint();
         mDefaultPaint.setAntiAlias(true);
         mDefaultPaint.setColor(mDefaultColor);
-//        mPaint
     }
 
     @Override
