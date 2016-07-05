@@ -22,7 +22,7 @@ import android.view.animation.AccelerateInterpolator;
 public class LnkPageIndicator extends View {
     private static final String TAG = "LnkPageIndicator";
 
-    private int mAnimDuration = 380;
+    private int mAnimDuration = 300;
     private int mDefaultColor = Color.parseColor("#C9C9C9");
     private int mSelectColor = Color.parseColor("#626262");
     private int mIndicatorWidth;
@@ -83,7 +83,6 @@ public class LnkPageIndicator extends View {
         float left = (width - spaceWidth) / 2 + mCacheIndex * (mIndicatorWidth + mIndicatorSpacing);
         float top = (height - mIndicatorWidth) / 2;
         float total = (mSelectIndex - mCacheIndex) * (mIndicatorWidth + mIndicatorSpacing);
-        mPaint.setColor(mSelectColor);
         float sx = (width - spaceWidth) / 2 + r;
         float sy = (height - mIndicatorWidth) / 2 + r;
 
@@ -91,15 +90,23 @@ public class LnkPageIndicator extends View {
             float av = (float) mAnimator.getAnimatedValue();
             RectF rectf = null;
             if (mRepeat) {
-                rectf = new RectF(left + total * (1.0f - av), top, left + mIndicatorWidth + total, top + mIndicatorWidth);
-                // cache index anim
                 RectF cacheRf = new RectF(left + mIndicatorWidth *av / 2,top,left + mIndicatorWidth *av /2+ mIndicatorWidth,top + mIndicatorWidth);
+                if (mSelectIndex > mCacheIndex) {
+                    rectf = new RectF(left + total * (1.0f - av), top, left + mIndicatorWidth + total, top + mIndicatorWidth);
+                }else {
+                    rectf = new RectF(left + total , top, left + mIndicatorWidth + total * (1.0f - av), top + mIndicatorWidth);
+                    cacheRf = new RectF(left - mIndicatorWidth *av /2,top,left +mIndicatorWidth- mIndicatorWidth *av /2  ,top + mIndicatorWidth);
+                }
                 canvas.save();
                 canvas.clipRect(cacheRf);
                 canvas.drawRoundRect(cacheRf, r, r, mDefaultPaint);
                 canvas.restore();
             } else {
-                rectf = new RectF(left, top, left + mIndicatorWidth + total * av, top + mIndicatorWidth);
+                if (mSelectIndex>mCacheIndex) {
+                    rectf = new RectF(left, top, left + mIndicatorWidth + total * av, top + mIndicatorWidth);
+                }else {
+                    rectf = new RectF(left+ total * av, top, left + mIndicatorWidth , top + mIndicatorWidth);
+                }
             }
             canvas.save();
             drawIndicators(canvas, sx, sy, r,true);
