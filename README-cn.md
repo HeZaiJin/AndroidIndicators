@@ -1,4 +1,4 @@
 # AndroidIndicators
-Android animatic page indicator.[中文版](https://github.com/HeZaiJin/AndroidIndicators/blob/master/README-cn.md)
+一个动画指示器.
 ## Preview
 ![preview](https://github.com/HeZaiJin/AndroidIndicators/blob/master/screen_shot/indicators.gif)

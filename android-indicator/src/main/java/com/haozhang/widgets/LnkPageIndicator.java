@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -12,10 +13,10 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Interpolator;
 
 /**
  * @author HaoZhang
- * @date 2016/7/4.
  */
 public class LnkPageIndicator extends View {
     private static final String TAG = "LnkPageIndicator";
@@ -55,8 +56,18 @@ public class LnkPageIndicator extends View {
 
     private void init(AttributeSet attrs) {
         mContext = getContext();
-        mIndicatorWidth = getResources().getDimensionPixelSize(R.dimen.default_indicator_width);
+        TypedArray array = mContext.obtainStyledAttributes(attrs, R.styleable.LnkPageIndicator);
+        mIndicatorWidth = array.getDimensionPixelSize(R.styleable.LnkPageIndicator_indicator_width, -1);
         mIndicatorSpacing = getResources().getDimensionPixelSize(R.dimen.default_indicator_spacing);
+        mIndicatorSpacing = array.getDimensionPixelSize(R.styleable.LnkPageIndicator_indicator_spacing, mIndicatorSpacing);
+        mDefaultColor = array.getColor(R.styleable.LnkPageIndicator_indicator_default_color, mDefaultColor);
+        mSelectColor = array.getColor(R.styleable.LnkPageIndicator_indicator_selected_color, mSelectColor);
+        mMax = array.getInteger(R.styleable.LnkPageIndicator_indicator_max, mMax);
+        mAnimDuration = array.getInteger(R.styleable.LnkPageIndicator_indicator_duration,mAnimDuration);
+        mSelectIndex = array.getInteger(R.styleable.LnkPageIndicator_indicator_selected_index, mSelectIndex);
+        mCacheIndex = mSelectIndex;
+        array.recycle();
+
         mAnimator = ValueAnimator.ofFloat(0f, 1f);
         mAnimator.setDuration(mAnimDuration);
         mAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -76,6 +87,9 @@ public class LnkPageIndicator extends View {
     protected void onDraw(Canvas canvas) {
         int width = getMeasuredWidth();
         int height = getMeasuredHeight();
+        if (mIndicatorWidth == -1) {
+            mIndicatorWidth = height;
+        }
         int spaceWidth = mIndicatorSpacing * (mMax - 1) + mIndicatorWidth * mMax;
         int r = mIndicatorWidth / 2;
         float left = (width - spaceWidth) / 2 + mCacheIndex * (mIndicatorWidth + mIndicatorSpacing);
@@ -88,26 +102,26 @@ public class LnkPageIndicator extends View {
             float av = (float) mAnimator.getAnimatedValue();
             RectF rectf = null;
             if (mRepeat) {
-                RectF cacheRf = new RectF(left + mIndicatorWidth *av / 2,top,left + mIndicatorWidth *av /2+ mIndicatorWidth,top + mIndicatorWidth);
+                RectF cacheRf = new RectF(left + mIndicatorWidth * av / 2, top, left + mIndicatorWidth * av / 2 + mIndicatorWidth, top + mIndicatorWidth);
                 if (mSelectIndex > mCacheIndex) {
                     rectf = new RectF(left + total * (1.0f - av), top, left + mIndicatorWidth + total, top + mIndicatorWidth);
-                }else {
-                    rectf = new RectF(left + total , top, left + mIndicatorWidth + total * (1.0f - av), top + mIndicatorWidth);
-                    cacheRf = new RectF(left - mIndicatorWidth *av /2,top,left +mIndicatorWidth- mIndicatorWidth *av /2  ,top + mIndicatorWidth);
+                } else {
+                    rectf = new RectF(left + total, top, left + mIndicatorWidth + total * (1.0f - av), top + mIndicatorWidth);
+                    cacheRf = new RectF(left - mIndicatorWidth * av / 2, top, left + mIndicatorWidth - mIndicatorWidth * av / 2, top + mIndicatorWidth);
                 }
                 canvas.save();
                 canvas.clipRect(cacheRf);
                 canvas.drawRoundRect(cacheRf, r, r, mDefaultPaint);
                 canvas.restore();
             } else {
-                if (mSelectIndex>mCacheIndex) {
+                if (mSelectIndex > mCacheIndex) {
                     rectf = new RectF(left, top, left + mIndicatorWidth + total * av, top + mIndicatorWidth);
-                }else {
-                    rectf = new RectF(left+ total * av, top, left + mIndicatorWidth , top + mIndicatorWidth);
+                } else {
+                    rectf = new RectF(left + total * av, top, left + mIndicatorWidth, top + mIndicatorWidth);
                 }
             }
             canvas.save();
-            drawIndicators(canvas, sx, sy, r,true);
+            drawIndicators(canvas, sx, sy, r, true);
             canvas.restore();
 
             canvas.save();
@@ -115,17 +129,22 @@ public class LnkPageIndicator extends View {
             canvas.drawRoundRect(rectf, r, r, mPaint);
             canvas.restore();
         } else {
-            drawIndicators(canvas, sx, sy, r,false);
+            drawIndicators(canvas, sx, sy, r, false);
         }
     }
 
-    private void drawIndicators(Canvas canvas, float sX, float sY, float r,boolean anim) {
+    public LnkPageIndicator setAnimInterpolator(Interpolator interpolator){
+        this.mAnimator.setInterpolator(interpolator);
+        return this;
+    }
+
+    private void drawIndicators(Canvas canvas, float sX, float sY, float r, boolean anim) {
         for (int i = 0; i < mMax; i++) {
-            if (anim){
-                if ( i != mCacheIndex){
+            if (anim) {
+                if (i != mCacheIndex) {
                     canvas.drawCircle(sX, sY, r, mDefaultPaint);
                 }
-            }else {
+            } else {
                 if (mSelectIndex == i) {
                     canvas.drawCircle(sX, sY, r, mPaint);
                 } else {
@@ -155,7 +174,9 @@ public class LnkPageIndicator extends View {
         });
         mAnimator.addListener(new Animator.AnimatorListener() {
             @Override
-            public void onAnimationStart(Animator animation) {}
+            public void onAnimationStart(Animator animation) {
+            }
+
             @Override
             public void onAnimationEnd(Animator animation) {
                 mCacheIndex = mSelectIndex;
@@ -175,9 +196,64 @@ public class LnkPageIndicator extends View {
         mAnimator.start();
     }
 
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    public int getAnimDuration() {
+        return mAnimDuration;
     }
+
+    public LnkPageIndicator setAnimDuration(int mAnimDuration) {
+        this.mAnimDuration = mAnimDuration;
+        return this;
+    }
+
+    public int getDefaultColor() {
+        return mDefaultColor;
+    }
+
+    public LnkPageIndicator setDefaultColor(int mDefaultColor) {
+        this.mDefaultColor = mDefaultColor;
+        return this;
+    }
+
+    public int getSelectColor() {
+        return mSelectColor;
+    }
+
+    public LnkPageIndicator setSelectColor(int mSelectColor) {
+        this.mSelectColor = mSelectColor;
+        return this;
+    }
+
+    public int getIndicatorWidth() {
+        return mIndicatorWidth;
+    }
+
+    public LnkPageIndicator setIndicatorWidth(int mIndicatorWidth) {
+        this.mIndicatorWidth = mIndicatorWidth;
+        return this;
+
+    }
+
+    public int getIndicatorSpacing() {
+        return mIndicatorSpacing;
+    }
+
+    public LnkPageIndicator setIndicatorSpacing(int mIndicatorSpacing) {
+        this.mIndicatorSpacing = mIndicatorSpacing;
+        return this;
+    }
+
+
+    public LnkPageIndicator setMax(int mMax) {
+        this.mMax = mMax;
+        return this;
+    }
+
+    public int getSelectIndex() {
+        return mSelectIndex;
+    }
+
+    public boolean isAnim() {
+        return mAnimator.isRunning();
+    }
+
 }

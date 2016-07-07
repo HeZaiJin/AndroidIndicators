@@ -3,34 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.haozhang.indicator.MainActivity">
 
-    <Button
-        android:id="@+id/bt0"
-        android:layout_width="100dp"
-        android:layout_height="60dp"
-        android:text="SetIndex0" />
-
-    <Button
-        android:layout_toRightOf="@id/bt0"
-        android:id="@+id/bt1"
-        android:layout_width="100dp"
-        android:layout_height="60dp"
-        android:text="SetIndex1" />
-    <Button
-        android:layout_toRightOf="@id/bt1"
-        android:id="@+id/bt2"
-        android:layout_width="100dp"
-        android:layout_height="60dp"
-        android:text="SetIndex2" />
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></android.support.v4.view.ViewPager>
 
     <com.haozhang.widgets.LnkPageIndicator
+        xmlns:indicator="http://schemas.android.com/apk/res-auto"
+        indicator:indicator_width="10dp"
+        indicator:indicator_spacing="8dp"
+        indicator:indicator_max="4"
         android:id="@+id/indicator"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="30dp"
+        android:layout_alignParentBottom="true"
         android:layout_centerInParent="true" />
 </RelativeLayout>

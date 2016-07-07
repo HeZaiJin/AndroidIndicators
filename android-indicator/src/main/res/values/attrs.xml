@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="LnkPageIndicator">
+        <attr name="indicator_width" format="dimension" />
+        <attr name="indicator_default_color" format="color" />
+        <attr name="indicator_selected_color" format="color" />
+        <attr name="indicator_spacing" format="dimension" />
+        <attr name="indicator_duration" format="integer" />
+        <attr name="indicator_max" format="integer" />
+        <attr name="indicator_selected_index" format="integer" />
+    </declare-styleable>
+</resources>
