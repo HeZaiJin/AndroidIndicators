@@ -8,10 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.haozhang.widgets.LnkPageIndicator;
+import com.haozhang.widgets.LnkViewPagerIndicator;
 
 public class ViewPagerActivity extends AppCompatActivity {
-    LnkPageIndicator mIndicator;
+    private static final String TAG = "ViewPagerActivity";
+    LnkViewPagerIndicator mIndicator;
     ViewPager mViewPager;
     ImageView[] mImageViews;
 
@@ -19,32 +20,17 @@ public class ViewPagerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_pager);
-        mIndicator = (LnkPageIndicator) findViewById(R.id.indicator);
+        mIndicator = (LnkViewPagerIndicator) findViewById(R.id.indicator);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         MyAdapter adapter = new MyAdapter(4);
         mIndicator.setMax(4);
         mViewPager.setAdapter(adapter);
-        mViewPager.setOnPageChangeListener(adapter);
+        mViewPager.setOnPageChangeListener(mIndicator);
     }
 
 
-    class MyAdapter extends PagerAdapter implements ViewPager.OnPageChangeListener {
+    class MyAdapter extends PagerAdapter{
         int max;
-
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            mIndicator.setSelectIndex(position);
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-
-        }
 
         public MyAdapter(int max) {
             this.max = max;
@@ -62,7 +48,7 @@ public class ViewPagerActivity extends AppCompatActivity {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            return getItem(container,position);
+            return getItem(container, position);
         }
 
         @Override

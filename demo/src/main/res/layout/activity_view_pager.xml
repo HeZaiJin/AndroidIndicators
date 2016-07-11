@@ -10,11 +10,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"></android.support.v4.view.ViewPager>
 
-    <com.haozhang.widgets.LnkPageIndicator xmlns:indicator="http://schemas.android.com/apk/res-auto"
+    <com.haozhang.widgets.LnkViewPagerIndicator xmlns:indicator="http://schemas.android.com/apk/res-auto"
         android:id="@+id/indicator"
         android:layout_width="match_parent"
-        android:layout_height="20dp"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
-        indicator:indicator_spacing="8dp"
-        indicator:indicator_width="10dp" />
+        indicator:indicator_spacing="60dp"
+        indicator:indicator_width="40dp" />
 </RelativeLayout>
