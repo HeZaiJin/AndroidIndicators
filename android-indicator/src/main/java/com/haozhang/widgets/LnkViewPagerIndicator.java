@@ -6,10 +6,13 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.os.Build;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 
@@ -80,7 +83,7 @@ public class LnkViewPagerIndicator extends View implements ViewPager.OnPageChang
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setColor(mSelectColor);
-
+        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.OVERLAY));
         mDefaultPaint = new Paint();
         mDefaultPaint.setAntiAlias(true);
         mDefaultPaint.setColor(mDefaultColor);
@@ -93,6 +96,7 @@ public class LnkViewPagerIndicator extends View implements ViewPager.OnPageChang
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         // position + positionOffset
+        Log.d(TAG, "onPageScrolled() called with: " + "position = [" + position + "], positionOffset = [" + positionOffset + "], positionOffsetPixels = [" + positionOffsetPixels + "]");
         if (position < mMax - 1) {
             mManager.setPosition(position).setPositionOffset(positionOffset);
             if (positionOffset == 0){
@@ -101,7 +105,7 @@ public class LnkViewPagerIndicator extends View implements ViewPager.OnPageChang
             postInvalidate();
         } else {
             // current is last index
-
+            mManager.setPosition(position).setPositionOffset(0);
         }
 
         if (null != mChangeListener) {
@@ -144,14 +148,23 @@ public class LnkViewPagerIndicator extends View implements ViewPager.OnPageChang
         int r = mIndicatorWidth / 2;
         switch (mManager.getMode()) {
             case LnkViewPagerIndicatorManager.MODE_FORWORD:
+                drawIndicators(canvas, mManager.getsX(), mManager.getsY(), r, true);
+
                 canvas.save();
                 RectF rectF = mManager.getForwordRectF();
                 canvas.clipRect(rectF);
                 canvas.drawRoundRect(rectF, r, r, mPaint);
                 canvas.restore();
+
                 break;
             case LnkViewPagerIndicatorManager.MODE_CLOSE:
+                drawIndicators(canvas, mManager.getsX(), mManager.getsY(), r, true);
 
+                canvas.save();
+                RectF close = mManager.getCloseRectF();
+                canvas.clipRect(close);
+                canvas.drawRoundRect(close, r, r, mPaint);
+                canvas.restore();
                 break;
             case LnkViewPagerIndicatorManager.MODE_RESET:
                 mSelectIndex = mManager.getSelectIndex();
@@ -202,9 +215,7 @@ public class LnkViewPagerIndicator extends View implements ViewPager.OnPageChang
     private void drawIndicators(Canvas canvas, float sX, float sY, float r, boolean anim) {
         for (int i = 0; i < mMax; i++) {
             if (anim) {
-                if (i != mCacheIndex) {
-                    canvas.drawCircle(sX, sY, r, mDefaultPaint);
-                }
+                canvas.drawCircle(sX, sY, r, mDefaultPaint);
             } else {
                 if (mSelectIndex == i) {
                     canvas.drawCircle(sX, sY, r, mPaint);
